@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'status',
+        'user_profile',
     ];
 
     /**
@@ -42,4 +45,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'profile_picture' => 'user.png',
+        'status' => 'offline',
+    ];
+
+    /**
+     * User Model Relations
+     */
+
+     public function rooms()
+     {
+         return $this->hasMany(Room::class);
+     }
+
+     public function friends()
+     {
+         return $this->hasMany(Friend::class);
+     }
+ 
+ 
 }
