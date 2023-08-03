@@ -34,6 +34,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
+        'email_verified_at',
     ];
 
     /**
@@ -51,10 +54,21 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
+    
     protected $attributes = [
-        'profile_picture' => 'user.png',
+        'profile_picture' => 'storage/profile-pictures/user.png',
         'status' => 'offline',
     ];
+
+    // public function getProfilePictureUrlAttribute()
+    // {
+    //     $env = env('APP_ENV');
+    //     if ($env === 'production') {
+    //         return 'https://somthing.com/' . $this->profile_picture;
+    //     } else {
+    //         return asset($this->profile_picture);
+    //     }
+    // }
 
     /**
      * User Model Relations
