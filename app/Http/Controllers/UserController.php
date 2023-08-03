@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Friend;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -10,41 +11,57 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of user chats.
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        $users = [
-            [
-                'id' => '1',
-                'name' => 'John Doe',
-                'status' => 'offline',
-            ],
-            [
-                'id' => '2',
-                'name' => 'Jane Smith',
-                'status' => 'online',
-            ],
-            [
-                'id' => '3',
-                'name' => 'Smith Smith',
-                'status' => 'online',
-            ],
-        ];
-        //dd($users);
-        // $users = $user->with('friends');
-        // $users = $user->friends();
-        // dd(json_encode($users));
-        return view('dashboard')->with(['users' => $users]);
+        // $users = [
+        //     [
+        //         'id' => '1',
+        //         'name' => 'John Doe',
+        //         'status' => 'offline',
+        //         'profile_picture' => env('APP_STORAGE') . 'user.png',
+        //     ],
+        //     [
+        //         'id' => '2',
+        //         'name' => 'Jane Smith',
+        //         'status' => 'online',
+        //         'profile_picture' => env('APP_STORAGE') . 'user.png',
+        //     ],
+        //     [
+        //         'id' => '3',
+        //         'name' => 'Smith Smith',
+        //         'status' => 'online',
+        //         'profile_picture' => env('APP_STORAGE') . 'user.png',
+        //     ],
+        // ];
+
+        $friends = Friend::where('user_id',$request->user()->id)
+        //->where('status','approved')
+        ->with("to_user")
+        ->simplePaginate(10);
+
+        //dd(json_encode($friends));
+
+        return view('dashboard')->with(['chats' => $friends]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function search(Request $request)
     {
-        //
+        $data = $request->validate([
+            'search' => ['required', 'string', 'max:255'],
+        ]);
+
+        $query = $data["search"];
+
+        $results = User::where('name', 'LIKE', "%$query%")
+            ->orWhere('username', 'LIKE', "%$query%")
+            ->paginate(10);
+
+        return view('users.search', [
+            'results' => $results,
+            'query' => $query,
+        ]);
     }
 
     /**
