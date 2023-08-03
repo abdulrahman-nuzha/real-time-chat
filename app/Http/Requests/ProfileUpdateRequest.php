@@ -19,7 +19,7 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['string', 'max:255'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'username' => ['string', 'max:255', Rule::unique(User::class)->ignore($this->user()->id), 'regex:/^(?=.{3,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])$/'],
-
+            'profile_picture' => ['image','mimes:jpg,png,jpeg','max:1024'],
         ];
     }
 }

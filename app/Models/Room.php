@@ -24,7 +24,10 @@ class Room extends Model
      *
      * @var array<int, string>
      */
-    protected $hidden = [];
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
 
     /**
      * Room Model Relations
