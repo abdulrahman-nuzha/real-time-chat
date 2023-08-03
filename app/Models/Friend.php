@@ -25,12 +25,20 @@ class Friend extends Model
      *
      * @var array<int, string>
      */
-    protected $hidden = [];
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
     /**
      * Friend Model Relations
      */
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function to_user()
+    {
+        return $this->belongsTo(User::class,'to_user_id');
     }
 }
