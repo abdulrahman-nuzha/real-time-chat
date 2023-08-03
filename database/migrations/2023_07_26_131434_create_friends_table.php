@@ -23,6 +23,8 @@ return new class extends Migration
                 ->foreign("to_user_id")
                 ->references("id")
                 ->on("users");
+
+            $table->enum("status",["approved","pending","rejected"]);
             $table->timestamps();
         });
     }
