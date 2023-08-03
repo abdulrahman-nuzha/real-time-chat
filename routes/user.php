@@ -14,7 +14,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
 
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 });
