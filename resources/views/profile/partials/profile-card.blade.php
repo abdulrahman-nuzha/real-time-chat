@@ -1,4 +1,4 @@
-{{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 <section
     class="w-80 mx-auto bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 rounded-2xl px-10 py-8">
     {{-- <div class="flex items-center justify-between">
@@ -9,37 +9,37 @@
             </span>
         </div> --}}
     <div class="mt-6 w-fit mx-auto">
-        <img src="{{ asset($profile_picture) }}" class="rounded-full w-28 " alt="profile picture" srcset="">
+        <img src="{{ asset($user->profile_picture) }}" class="rounded-full w-28 " alt="profile picture" srcset="">
     </div>
 
     <div class="mt-8 text-gray-900 dark:text-gray-100">
-        <h2 class="font-bold text-2xl tracking-wide">{{ $name }}</h2>
+        <h2 class="font-bold text-2xl tracking-wide">{{ $user->name }}</h2>
     </div>
 
     <div class="mt-2 text-gray-900 dark:text-gray-100">
-        <h2 class="font-bold text-2xl tracking-wide">{{ $username }}</h2>
+        <h2 class="font-bold text-2xl tracking-wide">{{ $user->username }}</h2>
     </div>
 
     <div class="mt-2 text-gray-900 dark:text-gray-100">
-        <h2 class="font-bold tracking-wide">{{ $email }}</h2>
+        <h2 class="font-bold tracking-wide">{{ $user->email }}</h2>
     </div>
 
     <div class="mt-2 flex">
         <div>
-            @if ($status == 'online')
+            @if ($user->status == 'online')
                 <svg class="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                     <circle cx="10" cy="10" r="5" />
                 </svg>
             @endif
 
-            @if ($status == 'offline')
+            @if ($user->status == 'offline')
                 <svg class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                     <circle cx="10" cy="10" r="5" />
                 </svg>
             @endif
         </div>
         <div class="text-gray-900 dark:text-gray-100 font-bold tracking-wide">
-            {{ $status }}
+            {{ $user->status }}
         </div>
     </div>
 
