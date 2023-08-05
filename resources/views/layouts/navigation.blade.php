@@ -26,34 +26,9 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
-                <!-- Search Bar -->
-                <div class="flex items-center mx-5">
-                    <form>
-                        <div class="relative h-auto w-80">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
-                            </div>
-                            <input type="search" action="real-time" id="search-bar"
-                                class="h-10 block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Search" required>
-                            <div id="search-results">
-                                {{-- @if ($results) --}}
-                                {{-- <ul> --}}
-                                {{-- @foreach ($results as $result) --}}
-                                {{-- <li>"name"</li> --}}
-                                {{-- @endforeach --}}
-                                {{-- </ul> --}}
-                                {{-- @else --}}
-                                {{-- <p>No results found.</p> --}}
-                                {{-- @endif --}}
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <!-- Search bar-->
+                {{-- <livewire:search-bar /> --}}
+                <x-search-label></x-search-label>
 
                 <div class="mx-5">
                     <x-notification-bell>
@@ -79,7 +54,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href=" route('user.profile', ['id' => Auth::user()->id])">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -100,7 +75,8 @@
                         <div class="relative ml-2">
                             <div class="rounded-full overflow-hidden">
                                 <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profile Picture"
-                                    class="h-8 w-8 object-cover">
+                                    class="h-8 w-8 object-cover"
+                                    onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';" >
                             </div>
                             @if (Auth::user()->status == 'online')
                                 <div
@@ -121,23 +97,6 @@
 
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
-                <div class="block lg:hidden items-center mx-10">
-                    <form>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
-                            </div>
-                            <input type="search" id="default-search"
-                                class="h-10 block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Search" required>
-                        </div>
-                    </form>
-                </div>
-
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -159,6 +118,10 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('friendslist')" :active="request()->routeIs('friendslist')">
+                {{ __('Friends list') }}
             </x-responsive-nav-link>
         </div>
 
