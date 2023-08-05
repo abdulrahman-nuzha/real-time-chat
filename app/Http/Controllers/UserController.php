@@ -12,6 +12,7 @@ class UserController extends Controller
 {
     /**
      * Display a listing of user chats.
+     //should be in chat controller but it here jsut for testing the design
      */
     public function index(Request $request)
     {
@@ -36,10 +37,10 @@ class UserController extends Controller
         //     ],
         // ];
 
-        $friends = Friend::where('user_id',$request->user()->id)
-        //->where('status','approved')
-        ->with("to_user")
-        ->simplePaginate(10);
+        $friends = Friend::where('user_id', $request->user()->id)
+            //->where('status','approved')
+            ->with("to_user")
+            ->simplePaginate(10);
 
         //dd(json_encode($friends));
 
@@ -48,59 +49,37 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-        $data = $request->validate([
-            'search' => ['required', 'string', 'max:255'],
-        ]);
+        return view('search');
+        // $data = $request->validate([
+        //     'search' => ['required', 'string', 'max:255'],
+        // ]);
 
-        $query = $data["search"];
+        // $query = $data["search"];
 
-        $results = User::where('name', 'LIKE', "%$query%")
-            ->orWhere('username', 'LIKE', "%$query%")
-            ->paginate(10);
+        // $results = User::where('name', 'LIKE', "%$query%")
+        //     ->orWhere('username', 'LIKE', "%$query%")
+        //     ->paginate(10);
 
-        return view('users.search', [
-            'results' => $results,
-            'query' => $query,
-        ]);
+        // return view('users.search', [
+        //     'results' => $results,
+        //     'query' => $query,
+        // ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+    // app/Http/Controllers/UserController.php
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function profile($id)
     {
-        //
-    }
+        $user = User::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if (!$user) {
+            abort(404); // Handle user not found
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $isOwnProfile = $user->id === Auth::id(); // Check if it's the logged-in user's profile
+
+        // Handle the user profile logic and return the view
+        return view('profile.profile', ['user' => $user, 'isOwnProfile' => $isOwnProfile]);
     }
 }
