@@ -17,7 +17,7 @@ class SearchBar extends Component
             $users = User::where(function ($queryBuilder) {
                 $queryBuilder->where('name', 'LIKE', '%' . $this->query . '%')
                     ->orWhere('username', 'LIKE', '%' . $this->query . '%');
-            })->paginate(10);
+            })->paginate(5);
 
             if ($users->isEmpty()) {
                 $users = [];
