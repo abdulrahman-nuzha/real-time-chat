@@ -54,7 +54,6 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    
     protected $attributes = [
         'profile_picture' => 'storage/profile-pictures/user.png',
         'status' => 'offline',
@@ -70,19 +69,74 @@ class User extends Authenticatable implements MustVerifyEmail
     //     }
     // }
 
+    public function areFriends(User $otherUser)
+    {
+        $friendship = Friend::where(function ($query) use ($otherUser) {
+            $query->where('user_id_1', $this->id)
+                ->where('user_id_2', $otherUser->id);
+        })
+            ->orWhere(function ($query) use ($otherUser) {
+                $query->where('user_id_1', $otherUser->id)
+                    ->where('user_id_2', $this->id);
+            })
+            ->first();
+
+        return $friendship ? $friendship->status : null;
+    }
+
+
     /**
      * User Model Relations
      */
 
-     public function rooms()
-     {
-         return $this->hasMany(Room::class);
-     }
+    public function rooms()
+    {
+        return $this->hasMany(Room::class);
+    }
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 
-     public function friends()
-     {
-         return $this->hasMany(Friend::class);
-     }
- 
- 
+    public function friends()
+    {
+        $userId = $this->id;
+
+        return User::query()
+            ->join('friends', function ($join) use ($userId) {
+                $join->on('users.id', '=', 'friends.user_id_1')
+                    ->where('friends.user_id_2', '=', $userId)
+                    ->orWhere(function ($query) use ($userId) {
+                        $query->on('users.id', '=', 'friends.user_id_2')
+                            ->where('friends.user_id_1', '=', $userId);
+                    });
+            })
+            ->select('users.*')
+            ->paginate();
+    }
+    public function approvedFriends()
+    {
+        // return $this->belongsToMany(User::class, 'friends', 'user_id_1', 'user_id_2')
+        //     ->where('friends.status', 'approved');
+        $userId = $this->id;
+
+        return User::query()
+            ->join('friends', function ($join) use ($userId) {
+                $join->on('users.id', '=', 'friends.user_id_1')
+                    ->where('friends.user_id_2', '=', $userId)
+                    ->orWhere(function ($query) use ($userId) {
+                        $query->on('users.id', '=', 'friends.user_id_2')
+                            ->where('friends.user_id_1', '=', $userId);
+                    });
+            })
+            ->where('friends.status', '=', 'approved')
+            ->select('users.*')
+            ->paginate();
+    }
+
+    public function friendsRequests()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id_2', 'user_id_1')
+            ->where('friends.status', 'pending');
+    }
 }
