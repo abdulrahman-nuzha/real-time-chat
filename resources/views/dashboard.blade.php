@@ -15,27 +15,27 @@
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center">
                                     <div class="rounded-full overflow-hidden mr-2">
-                                        <img src="{{ asset($chat->to_user->profile_picture) }}" alt="Profile Picture"
+                                        <img src="{{ asset($chat->profile_picture) }}" alt="Profile Picture"
                                             class="h-8 w-8 object-cover"
                                             onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';">
                                     </div>
                                     <div>
-                                        <span class="font-semibold">{{ $chat->to_user->name }}</span>
+                                        <span class="font-semibold">{{ $chat->name }}</span>
                                     </div>
                                 </div>
                                 <div class="mx-6 flex items-center">
-                                    @if ($chat->to_user->status == 'online')
+                                    @if ($chat->status == 'online')
                                         <svg class="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                             <circle cx="10" cy="10" r="5" />
                                         </svg>
                                     @endif
 
-                                    @if ($chat->to_user->status == 'offline')
+                                    @if ($chat->status == 'offline')
                                         <svg class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                             <circle cx="10" cy="10" r="5" />
                                         </svg>
                                     @endif
-                                    <div class="mx-1">{{ $chat->to_user->status }}</div>
+                                    <div class="mx-1">{{ $chat->status }}</div>
                                 </div>
                             </div>
                         </div>
