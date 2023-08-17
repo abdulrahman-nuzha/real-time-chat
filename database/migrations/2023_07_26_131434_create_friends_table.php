@@ -13,18 +13,20 @@ return new class extends Migration
     {
         Schema::create('friends', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("user_id_1");
             $table
-                ->foreign("user_id")
+                ->foreign("user_id_1")
                 ->references("id")
                 ->on("users");
-            $table->unsignedBigInteger("to_user_id");
+            $table->unsignedBigInteger("user_id_2");
             $table
-                ->foreign("to_user_id")
+                ->foreign("user_id_2")
                 ->references("id")
                 ->on("users");
 
-            $table->enum("status",["approved","pending","rejected"]);
+            $table->unique(['user_id_1', 'user_id_2']);
+                    
+            $table->enum("status", ["approved", "pending", "rejected"]);
             $table->timestamps();
         });
     }
