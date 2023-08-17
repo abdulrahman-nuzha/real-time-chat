@@ -9,14 +9,14 @@ class Friend extends Model
 {
     use HasFactory;
 
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
-        'to_user_id',
+        'user_id_1',
+        'user_id_2',
         'status',
     ];
 
@@ -32,13 +32,8 @@ class Friend extends Model
     /**
      * Friend Model Relations
      */
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class,'user_id');
-    }
-
-    public function to_user()
-    {
-        return $this->belongsTo(User::class,'to_user_id');
+        return $this->belongsToMany(User::class, 'friends', 'user_id_1', 'user_id_2');
     }
 }
