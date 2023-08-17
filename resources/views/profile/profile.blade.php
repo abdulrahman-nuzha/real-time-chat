@@ -45,11 +45,21 @@
                         </a>
                     </div>
                 @else
-                    <!-- Display different information for viewing another user's profile -->
                     <div class="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-                        <x-primary-button>{{ __('Send request') }}</x-primary-button>
-
-                        <x-primary-button>{{ __('Message') }}</x-primary-button>
+                        @if (!$friendStatus)
+                            <x-primary-button class="send-friendship-request" data-user-id="{{ $user->id }}">
+                                {{ __('Send request') }}
+                            </x-primary-button>
+                            <x-input-error class="mt-2 friend-error" :messages="$errors->get('error')" />
+                        @else
+                            @if ($friendStatus === 'approved')
+                                <x-primary-button>{{ __('Message') }}</x-primary-button>
+                            @elseif($friendStatus === 'pending')
+                                <x-primary-button class="bg-yellow-200">{{ __('Pending') }}</x-primary-button>
+                            @else
+                                <x-primary-button class="bg-red-500">{{ __('Rejected') }}</x-primary-button>
+                            @endif
+                        @endif
                     </div>
                 @endif
 
@@ -67,3 +77,33 @@
 
 
 </x-app-layout>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.send-friendship-request').on('click', function() {
+            var userId = $(this).data('user-id');
+
+            var url = "{{ route('friend.add') }}";
+            //alert(url);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    user_id: userId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    console.log("success");
+                    $('.error-container').empty();
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseText;
+                    $('.error-container').text('Error: ' +
+                    errorMessage); // Display the error
+                    console.log(errorMessage);
+                }
+            });
+        });
+    });
+</script>
