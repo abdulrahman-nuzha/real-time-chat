@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Friend extends Model
+class Notification extends Model
 {
     use HasFactory;
 
+    
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id_1',
-        'user_id_2',
-        'status',
+        'user_id',
+        'title',
+        'body',
     ];
 
     /**
@@ -29,11 +30,13 @@ class Friend extends Model
         'created_at',
         'updated_at'
     ];
+
     /**
-     * Friend Model Relations
+     * Notification Model Relations
      */
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'friends', 'user_id_1', 'user_id_2');
-    }
+
+     public function user()
+     {
+         return $this->belongsTo(User::class);
+     }
 }

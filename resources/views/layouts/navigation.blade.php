@@ -17,8 +17,12 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('friendslist')" :active="request()->routeIs('friendslist')">
+                    <x-nav-link :href="route('friend.list')" :active="request()->routeIs('friend.list')">
                         {{ __('Friends list') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('friend.requests')" :active="request()->routeIs('friend.requests')">
+                        {{ __('Friends requests') }}
                     </x-nav-link>
 
                 </div>
@@ -27,14 +31,9 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <!-- Search bar-->
-                {{-- <livewire:search-bar /> --}}
                 <x-search-label></x-search-label>
-
-                <div class="mx-5">
-                    <x-notification-bell>
-
-                    </x-notification-bell>
-                </div>
+                <!-- Notifications-->
+                <livewire:notifications />
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -54,7 +53,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href=" route('user.profile', ['id' => Auth::user()->id])">
+                        <x-dropdown-link :href="route('user.profile', ['id' => Auth::user()->id])">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -70,13 +69,13 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
-                <a href="{{ route('profile.edit') }}">
+                <a href="{{ route('user.profile', ['id' => Auth::user()->id]) }}">
                     <div class="flex items-center">
                         <div class="relative ml-2">
                             <div class="rounded-full overflow-hidden">
                                 <img src="{{ asset(Auth::user()->profile_picture) }}" alt="Profile Picture"
                                     class="h-8 w-8 object-cover"
-                                    onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';" >
+                                    onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';">
                             </div>
                             @if (Auth::user()->status == 'online')
                                 <div
@@ -120,8 +119,12 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('friendslist')" :active="request()->routeIs('friendslist')">
+            <x-responsive-nav-link :href="route('friend.list')" :active="request()->routeIs('friend.list')">
                 {{ __('Friends list') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('friend.requests')" :active="request()->routeIs('friend.requests')">
+                {{ __('Friends requests') }}
             </x-responsive-nav-link>
         </div>
 
