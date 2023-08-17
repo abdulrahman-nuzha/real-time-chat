@@ -37,37 +37,19 @@ class UserController extends Controller
         //     ],
         // ];
 
-        $friends = Friend::where('user_id', $request->user()->id)
-            //->where('status','approved')
-            ->with("to_user")
-            ->simplePaginate(10);
-
-        //dd(json_encode($friends));
-
+        // $friends = Friend::where('user_id', $request->user()->id)
+        //     //->where('status','approved')
+        //     ->with("to_user")
+        //     ->simplePaginate(10);
+        $friends = $request->user()->friends();
+        // dd(json_encode($friends));
         return view('dashboard')->with(['chats' => $friends]);
     }
 
     public function search(Request $request)
     {
         return view('search');
-        // $data = $request->validate([
-        //     'search' => ['required', 'string', 'max:255'],
-        // ]);
-
-        // $query = $data["search"];
-
-        // $results = User::where('name', 'LIKE', "%$query%")
-        //     ->orWhere('username', 'LIKE', "%$query%")
-        //     ->paginate(10);
-
-        // return view('users.search', [
-        //     'results' => $results,
-        //     'query' => $query,
-        // ]);
     }
-
-
-    // app/Http/Controllers/UserController.php
 
     public function profile($id)
     {
@@ -78,8 +60,26 @@ class UserController extends Controller
         }
 
         $isOwnProfile = $user->id === Auth::id(); // Check if it's the logged-in user's profile
-
-        // Handle the user profile logic and return the view
-        return view('profile.profile', ['user' => $user, 'isOwnProfile' => $isOwnProfile]);
+        //check if two users are friends
+        // $friendStatus = Friend::where('user_id', auth()->user()->id)
+        //     ->where('to_user_id', $user)->get();
+        // $friendStatus =   $user->friends()->where('user_id', auth()->user()->id)->exists();
+        // dd($user->friends());
+        // dd(json_decode($friendStatus));
+        // if ($friendStatus) {
+        //     $friendStatus = $friendStatus->status;
+        // } else {
+        //     $friendStatus = false;
+        // }
+        $friendStatus = "";
+        if (!$isOwnProfile) {
+            $friendStatus = $user->areFriends(auth()->user());
+        }
+        //dd(auth()->user()->id . "    " . $user->id);
+        return view('profile.profile', [
+            'user' => $user,
+            'isOwnProfile' => $isOwnProfile,
+            'friendStatus' => $friendStatus,
+        ]);
     }
 }
