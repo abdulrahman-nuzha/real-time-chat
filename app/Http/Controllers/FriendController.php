@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewNotification;
 use App\Models\Friend;
 use App\Models\Notification;
 use App\Models\User;
@@ -64,6 +65,8 @@ class FriendController extends Controller
         $notification->body = $request->user()->name . " Send you a friend request.";
         $notification->save();
 
+        event(new NewNotification($notification, $user));
+
         return redirect()->back()->with('success', 'Request Sent Successfully');
     }
 
@@ -92,7 +95,7 @@ class FriendController extends Controller
             'user_id_2' => $request->user()->id,
             'status' => "pending"
         ])->first();
-        
+
         if (!$friend) {
             return back()->withErrors([['error' => 'Friend Request is not exist'], Response::HTTP_NOT_FOUND]);
         }
@@ -102,10 +105,12 @@ class FriendController extends Controller
         ]);
 
         $notification = new Notification();
-        $notification->user_id = $request->user()->id;
-        $notification->title = "Accept Your Friend Request";
-        $notification->body = $user->name . " Accept your friend request.";
+        $notification->user_id = $user->id;
+        $notification->title = "Accepted Your Friend Request";
+        $notification->body = auth()->user()->name . " Accepted your friend request.";
         $notification->save();
+
+        event(new NewNotification($notification, $user));
 
         return redirect()->back()->with('success', 'Friend Request Approved Successfully');
     }
@@ -145,10 +150,12 @@ class FriendController extends Controller
         ]);
 
         $notification = new Notification();
-        $notification->user_id = $request->user()->id;
-        $notification->title = "Reject Your Friend Request";
-        $notification->body = $user->name . " Reject your friend request.";
+        $notification->user_id = $user->id;
+        $notification->title = "Rejected Your Friend Request";
+        $notification->body = auth()->user()->id . " Rejected your friend request.";
         $notification->save();
+
+        event(new NewNotification($notification, $user));
 
         return redirect()->back()->with('success', 'Friend Request Approved Successfully');
     }
