@@ -97,6 +97,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Notification::class);
     }
+    public function unReadNotifications()
+    {
+        return $this->hasMany(Notification::class)
+            ->where('notifications.isRead', false);
+    }
 
     public function friends()
     {
