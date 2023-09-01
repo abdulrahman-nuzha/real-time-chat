@@ -9,7 +9,7 @@ class Notification extends Model
 {
     use HasFactory;
 
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -19,6 +19,7 @@ class Notification extends Model
         'user_id',
         'title',
         'body',
+        'isRead',
     ];
 
     /**
@@ -32,11 +33,21 @@ class Notification extends Model
     ];
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'isRead' => false,
+    ];
+
+    
+    /**
      * Notification Model Relations
      */
 
-     public function user()
-     {
-         return $this->belongsTo(User::class);
-     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

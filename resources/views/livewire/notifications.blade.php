@@ -7,8 +7,9 @@
                 d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z" />
         </svg>
         <div class="relative flex">
-            <div
-                class="relative inline-flex w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-2 right-3 dark:border-gray-900">
+            <div id="notification-counter"
+                class="absolute -top-2 -right-1/3 h-3 w-3 rounded-full bg-red-600 flex justify-center items-center items text-white dark:border-gray-900">
+                <span class="text-xs">{{ count($notifications) }}</span>
             </div>
         </div>
     </button>
@@ -20,9 +21,10 @@
             class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
             Notifications
         </div>
-        @foreach ($notifications as $notification)
-            <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <div id="NotificationContainer" class="divide-y divide-gray-100 dark:divide-gray-700">
+            @forelse ($notifications as $notification)
+                <a href="#" wire:click="markAsRead('{{ $notification->id }}')"
+                    class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
                     <div class="flex-shrink-0">
                         {{-- <img class="rounded-full w-11 h-11" src="/docs/images/people/profile-picture-2.jpg"
                         alt="Joseph image"> --}}
@@ -40,8 +42,10 @@
                         <div class="text-xs text-blue-600 dark:text-blue-500">{{ $notification->time_ago }}</div>
                     </div>
                 </a>
-            </div>
-        @endforeach
+            @empty
+                <span id="noNotificationsMessage" class="block px-4 py-2">No new notifications.</span>
+            @endforelse
+        </div>
         <a href="#"
             class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
             <div class="inline-flex items-center ">

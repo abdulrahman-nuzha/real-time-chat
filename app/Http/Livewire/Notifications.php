@@ -7,16 +7,17 @@ use Livewire\Component;
 
 class Notifications extends Component
 {
+    public $notifications;
     public function render(Request $request)
     {
-        $notifications = $request->user()
-            ->notifications()
+        $this->notifications = $request->user()
+            ->unReadNotifications()
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
         // Modify created_at attribute to human-readable format
-        $notifications->transform(function ($notification) {
+        $this->notifications->transform(function ($notification) {
             $notification->time_ago = $notification->created_at->diffForHumans();
             return $notification;
         });
@@ -24,6 +25,18 @@ class Notifications extends Component
 
         //unread it notifications //modify the migration to include isSeen attribute 
 
-        return view('livewire.notifications', ['notifications' => $notifications]);
+        return view('livewire.notifications', ['notifications' => $this->notifications]);
+    }
+
+    public function markAsRead($notificationId)
+    {
+        $notification = auth()->user()->notifications->find($notificationId);
+
+        if ($notification) {
+            $notification->isRead = true;
+            $notification->save();
+
+            $this->notifications = auth()->user()->unReadNotifications;
+        }
     }
 }

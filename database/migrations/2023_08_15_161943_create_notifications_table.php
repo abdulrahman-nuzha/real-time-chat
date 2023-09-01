@@ -20,6 +20,8 @@ return new class extends Migration
                 ->foreign("user_id")
                 ->references("id")
                 ->on("users");
+            $table->boolean('isRead');
+            $table->enum('type', ['request']);
             $table->timestamps();
         });
     }
