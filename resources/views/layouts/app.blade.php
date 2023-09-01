@@ -15,6 +15,11 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <livewire:styles />
+
+    <!-- Pusher -->
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="{{ asset('notification.js') }}"></script>
+
 </head>
 
 <body class="font-sans antialiased">
@@ -34,8 +39,15 @@
         <main>
             {{ $slot }}
         </main>
+
+        <div id="toastNotification" class="absolute bottom-0 right-0 mr-5 mb-2">
+
+        </div>
     </div>
     <livewire:scripts />
 </body>
 
 </html>
+<script>
+    const userId = {{ auth()->user()->id }};
+</script>
