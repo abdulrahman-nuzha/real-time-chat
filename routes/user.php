@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(["prefix" => "user"], function () {
-        Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
+        //Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
         Route::get('/search', [UserController::class, 'search'])->name('search');
         Route::get('/profile/{id}', [UserController::class, 'profile'])->name('user.profile');
 

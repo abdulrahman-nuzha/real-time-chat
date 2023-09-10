@@ -59,16 +59,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'status' => 'offline',
     ];
 
-    // public function getProfilePictureUrlAttribute()
-    // {
-    //     $env = env('APP_ENV');
-    //     if ($env === 'production') {
-    //         return 'https://somthing.com/' . $this->profile_picture;
-    //     } else {
-    //         return asset($this->profile_picture);
-    //     }
-    // }
-
     public function areFriends(User $otherUser)
     {
         $friendship = Friend::where(function ($query) use ($otherUser) {
@@ -91,8 +81,22 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function rooms()
     {
-        return $this->hasMany(Room::class);
+        // return $this->belongsToMany(User::class, 'rooms', 'user_id_2', 'user_id_1');
+        $userId = $this->id;
+
+        return User::query()
+            ->join('rooms', function ($join) use ($userId) {
+                $join->on('users.id', '=', 'rooms.user_id_1')
+                    ->where('rooms.user_id_2', '=', $userId)
+                    ->orWhere(function ($query) use ($userId) {
+                        $query->on('users.id', '=', 'rooms.user_id_2')
+                            ->where('rooms.user_id_1', '=', $userId);
+                    });
+            })
+            ->select('users.id as user_id', 'users.*', 'rooms.id as room_id', 'rooms.*')
+            ->paginate();
     }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);

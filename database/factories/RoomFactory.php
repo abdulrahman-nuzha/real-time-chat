@@ -19,8 +19,8 @@ class RoomFactory extends Factory
         $userIds = \App\Models\User::pluck('id')->toArray();
 
         return [
-            'from_user_id' => fake()->randomElement($userIds),
-            'to_user_id' => fake()->randomElement($userIds),
+            'user_id_1' => fake()->randomElement($userIds),
+            'user_id_2' => fake()->randomElement($userIds),
         ];
     }
 }

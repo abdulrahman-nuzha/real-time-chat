@@ -35,3 +35,5 @@ Route::get('/test', function () {
 require __DIR__ . '/auth.php';
 require __DIR__ . '/user.php';
 require __DIR__ . '/friend.php';
+require __DIR__ . '/notification.php';
+require __DIR__ . '/room.php';
