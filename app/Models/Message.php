@@ -9,7 +9,7 @@ class Message extends Model
 {
     use HasFactory;
 
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -17,7 +17,9 @@ class Message extends Model
     protected $fillable = [
         'message',
         'type',
-        'room_id'
+        'room_id',
+        'sender_id',
+        'receiver_id',
     ];
 
     /**
