@@ -50,15 +50,21 @@
                             <x-primary-button class="send-friendship-request" data-user-id="{{ $user->id }}">
                                 {{ __('Send request') }}
                             </x-primary-button>
-                            <x-input-error class="mt-2 friend-error" :messages="$errors->get('error')" />
                         @else
                             @if ($friendStatus === 'approved')
                                 <x-primary-button>{{ __('Message') }}</x-primary-button>
+                                <x-primary-button class="remove-friendship"
+                                    data-user-id="{{ $user->id }}">{{ __('Remove Friend') }}</x-primary-button>
                             @elseif($friendStatus === 'pending')
                                 <x-primary-button class="bg-yellow-200">{{ __('Pending') }}</x-primary-button>
+                                <x-primary-button class="cancel-friend-request"
+                                    data-user-id="{{ $user->id }}">{{ __('Cancel Friend Request') }}</x-primary-button>
                             @else
                                 <x-primary-button class="bg-red-500">{{ __('Rejected') }}</x-primary-button>
+                                <x-primary-button class="cancel-friend-request"
+                                    data-user-id="{{ $user->id }}">{{ __('Cancel Friend Request') }}</x-primary-button>
                             @endif
+
                         @endif
                     </div>
                 @endif
@@ -73,6 +79,7 @@
                 <p class="mt-2 text-gray-800 dark:text-gray-200">{{ $user->status }}</p>
             </div>
         </div>
+        <x-input-error class="mt-2 friend-error" :messages="$errors->get('error')" />
     </div>
 
 
@@ -82,9 +89,8 @@
     $(document).ready(function() {
         $('.send-friendship-request').on('click', function() {
             var userId = $(this).data('user-id');
-
             var url = "{{ route('friend.add') }}";
-            //alert(url);
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -100,7 +106,61 @@
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseText;
                     $('.error-container').text('Error: ' +
-                    errorMessage); // Display the error
+                        errorMessage); // Display the error
+                    //console.log(errorMessage);
+                }
+            });
+        });
+
+        //remove-friendship
+        $('.remove-friendship').on('click', function() {
+            var userId = $(this).data('user-id');
+            var url = "{{ route('friend.destroy') }}";
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    user_id: userId,
+                    _token: '{{ csrf_token() }}',
+                    _method: 'DELETE'
+                },
+                success: function(response) {
+                    console.log("success");
+                    $('.error-container').empty();
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseText;
+                    $('.error-container').text('Error: ' +
+                        errorMessage); // Display the error
+                    console.log(errorMessage);
+                }
+            });
+        });
+
+        //cancel friend request
+        $('.cancel-friend-request').on('click', function() {
+            var userId = $(this).data('user-id');
+            var url = "{{ route('friend.remove') }}";
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    user_id: userId,
+                    _token: '{{ csrf_token() }}',
+                    _method: 'DELETE'
+                },
+                success: function(response) {
+                    console.log("success");
+                    $('.error-container').empty();
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseText;
+                    $('.error-container').text('Error: ' +
+                        errorMessage); // Display the error
                     console.log(errorMessage);
                 }
             });
