@@ -92,6 +92,7 @@ class FriendController extends Controller
             return back()->withErrors(['error' => 'There`s Not a Friend Request']);
         }
         $friend = Friend::where([
+            'user_id_1' => $user->id,
             'user_id_2' => $request->user()->id,
             'status' => "pending"
         ])->first();
@@ -137,6 +138,7 @@ class FriendController extends Controller
         }
 
         $friend = Friend::where([
+            'user_id_1' => $user->id,
             'user_id_2' => $request->user()->id,
             'status' => "pending"
         ])->first();
@@ -149,46 +151,92 @@ class FriendController extends Controller
             'status' => "rejected"
         ]);
 
-        $notification = new Notification();
-        $notification->user_id = $user->id;
-        $notification->title = "Rejected Your Friend Request";
-        $notification->body = auth()->user()->id . " Rejected your friend request.";
-        $notification->save();
+        // $notification = new Notification();
+        // $notification->user_id = $user->id;
+        // $notification->title = "Rejected Your Friend Request";
+        // $notification->body = auth()->user()->id . " Rejected your friend request.";
+        // $notification->save();
 
-        event(new NewNotification($notification, $user));
+        // event(new NewNotification($notification, $user));
 
         return redirect()->back()->with('success', 'Friend Request Approved Successfully');
     }
 
     /**
-     * Display the specified resource.
+     * Remove the friendship.
      */
-    public function show(string $id)
+    public function destroy(Request $request)
     {
-        //
+        $userId = $request->input('user_id');
+        //remove user friend request
+        $user = User::find($userId);
+
+        if (!$user) {
+            return back()->withErrors([['error' => 'User is not exist'], Response::HTTP_NOT_FOUND]);
+        }
+
+        $friendStatus = $user->areFriends(auth()->user());
+        if (!$friendStatus) {
+            return back()->withErrors(['error' => 'You Should Send Friend Request First']);
+        }
+
+        if ($friendStatus != "approved") {
+            return back()->withErrors(['error' => 'You Should Be Friends First']);
+        }
+
+        $friend = Friend::where(
+            function ($query) use ($user) {
+                $query
+                    ->where('user_id_1', auth()->user()->id)
+                    ->where('user_id_2', $user->id)
+                    ->orWhere('user_id_1', $user->id)
+                    ->where('user_id_2', auth()->user()->id);
+            }
+        )->first();
+
+        if (!$friend) {
+            return back()->withErrors([['error' => 'Friend Request is not exist'], Response::HTTP_NOT_FOUND]);
+        }
+
+        $friend->delete();
+
+        //!should delete the notification also
+        //!but first find a way to know which notification exactly should I delete
+        return redirect()->back()->with('success', 'Friend Request Removed Successfully');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Remove the friend request.
      */
-    public function edit(string $id)
+    public function remove(Request $request)
     {
-        //
-    }
+        $userId = $request->input('user_id');
+        //remove user friend request
+        $user = User::find($userId);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if (!$user) {
+            return back()->withErrors([['error' => 'User is not exist'], Response::HTTP_NOT_FOUND]);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $friendStatus = $user->areFriends(auth()->user());
+        if (!$friendStatus) {
+            return back()->withErrors(['error' => 'You Should Send Friend Request First']);
+        }
+
+        $friend = Friend::where([
+            'user_id_1' => auth()->user()->id,
+            'user_id_2' => $user->id
+        ])->first();
+
+        if (!$friend) {
+            return back()->withErrors([['error' => 'Friend Request is not exist'], Response::HTTP_NOT_FOUND]);
+        }
+
+        $friend->delete();
+
+        //!should delete the notification also
+        //!but first find a way to know which notification exactly should I delete
+
+        return redirect()->back()->with('success', 'Friend Request Removed Successfully');
     }
 }
