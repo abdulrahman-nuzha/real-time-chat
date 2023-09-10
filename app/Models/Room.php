@@ -15,8 +15,8 @@ class Room extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'from_user_id',
-        'to_user_id',
+        'user_id_1',
+        'user_id_2',
     ];
 
     /**
@@ -33,8 +33,28 @@ class Room extends Model
      * Room Model Relations
      */
 
-     public function user()
-     {
-         return $this->belongsTo(User::class,'from_user_id');
-     }
+    // public function userOdd()
+    // {
+    //     return $this->belongsTo(User::class, 'user_id_1');
+    // }
+
+    // public function userEven()
+    // {
+    //     return $this->belongsTo(User::class, 'user_id_2');
+    // }
+
+    // public function users()
+    // {
+    //     return $this->belongsToMany(User::class)
+    //         ->where(function ($query) {
+    //             $query->where('user_id_1', $this->user_id_1)
+    //                   ->orWhere('user_id_2', $this->user_id_2);
+    //         });
+    // }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'rooms', 'user_id_1', 'user_id_2');
+    }
 }
+
