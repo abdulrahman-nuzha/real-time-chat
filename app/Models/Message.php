@@ -35,7 +35,18 @@ class Message extends Model
     /**
      * Message Model Relations
      */
-    public function user()
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function room()
     {
         return $this->belongsTo(Room::class);
     }

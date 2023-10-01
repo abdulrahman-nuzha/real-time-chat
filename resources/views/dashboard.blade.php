@@ -9,8 +9,8 @@
         @if ($rooms)
             @foreach ($rooms as $room)
                 {{-- <a href="{{ route('profile.edit') }}"class="max-w-4xl mx-auto my-3 sm:px-6 lg:px-8 block hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-sm rounded-lg"> --}}
-                <div class="max-w-4xl mx-auto my-3 sm:px-6 lg:px-8 rounded-lg shadow-xl">
-                    <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
+                <div class="max-w-4xl mx-auto my-3 sm:px-6 lg:px-8">
+                    <div class="bg-white dark:bg-gray-800 shadow-[rgba(0,0,15,0.2)_5px_3px_4px_0px] sm:rounded-md">
                         <div class="p-6 text-gray-900 dark:text-gray-100">
                             <div class="flex justify-between items-center">
                                 <a href="{{ route('profile.edit') }}">
@@ -56,8 +56,7 @@
                                 <div class="mx-6 flex items-center">
                                     <x-dropdown align="right" width="48">
                                         <x-slot name="trigger">
-                                            <button id="dropdownMenuIconHorizontalButton"
-                                                data-dropdown-toggle="dropdownDotsHorizontal"
+                                            <button id="dropdownMenuIconHorizontalButton" {{-- data-dropdown-toggle="dropdownDotsHorizontal" --}}
                                                 class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-1 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                                                 type="button">
                                                 <svg class="w-5 h-5" aria-hidden="true"
