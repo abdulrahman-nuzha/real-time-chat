@@ -7,6 +7,7 @@
 
     <div class="flex h-[calc(100vh-138px)] text-gray-800 shadow-md dark:shadow-gray-100 shadow-gray-600">
         <div class="flex flex-row w-full overflow-x-hidden">
+            <!--Active Conversations Section-->
             <div class="flex flex-col pl-6 pr-2 w-64 bg-white dark:bg-gray-800 flex-shrink-0">
                 <div class="flex flex-col mt-8">
                     <div class="flex flex-row items-center justify-between text-xs">
@@ -58,83 +59,87 @@
                 </div>
             </div>
 
-            <div class="flex flex-col flex-auto h-full overflow-y-auto ">
+            <!--Chat Section-->
+            <div class="flex flex-col flex-auto h-full">
                 <div
                     class="flex flex-col flex-auto flex-shrink-0 bg-gray-100 dark:bg-gray-700 h-full p-4  shadow-inner dark:shadow-gray-800 shadow-gray-200">
+                    <!--Messages Section-->
                     <div class="flex flex-col h-full overflow-y-auto mb-4">
                         <div class="flex justify-end flex-col h-full">
-                            <div class="grid grid-cols-12 gap-y-2">
-                                <div class="col-start-1 col-end-8 p-2 rounded-lg">
-                                    <div class="flex flex-row items-center">
-                                        <div
-                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                            A
-                                        </div>
-                                        <div
-                                            class="relative ml-3 text-sm bg-white dark:bg-gray-800 py-2 px-4 shadow rounded-xl">
-                                            <div class="text-gray-900 dark:text-gray-100">Hey How are you today?</div>
-                                        </div>
+                            <div class="grid grid-cols-12 gap-y-2 overflow-y-auto" id="message-container">
+                                @if ($data)
+                                    <!-- Loading spinner -->
+                                    <div id="loading-spinner"
+                                        class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 pb-2"
+                                        style="display: none;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
+                                            <path
+                                                d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
+                                                opacity=".25" />
+                                            <circle cx="12" cy="2.5" r="1.5">
+                                                <animateTransform attributeName="transform" type="rotate"
+                                                    dur="1s" values="0 12 12;360 12 12"
+                                                    repeatCount="indefinite" />
+                                            </circle>
+                                        </svg>
                                     </div>
-                                </div>
-                                <div class="col-start-6 col-end-13 p-3 rounded-lg">
-                                    <div class="flex items-center justify-start flex-row-reverse">
-                                        <div
-                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                            A
-                                        </div>
-                                        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                                            <div>I'm ok what about you?</div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="col-start-1 col-end-8 p-2 rounded-lg">
-                                    <div class="flex flex-row items-center">
-                                        <div
-                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                            A
-                                        </div>
-                                        <div
-                                            class="relative ml-3 text-sm bg-white dark:bg-gray-800 py-2 px-4 shadow rounded-xl">
-                                            <div class="text-gray-900 dark:text-gray-100">Lorem ipsum dolor sit amet !
+                                    @foreach ($data->messages->reverse() as $message)
+                                        @if ($message->sender_id == auth()->user()->id)
+                                            <!--Sender Section-->
+                                            <div class="col-start-6 col-end-13 p-2 rounded-lg">
+                                                <div class="flex items-center justify-start flex-row-reverse">
+                                                    <!--Profile Picture-->
+                                                    <a href="{{ route('user.profile', ['id' => Auth::user()->id]) }}">
+                                                        <div
+                                                            class="flex items-center justify-center h-10 w-10 rounded-full overflow-hidden bg-indigo-500 flex-shrink-0">
+                                                            <img src="{{ asset(auth()->user()->profile_picture) }}"
+                                                                alt="Profile Picture" class="h-10 w-10 object-cover"
+                                                                onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';">
+                                                        </div>
+                                                    </a>
+                                                    <!--Message-->
+                                                    <div
+                                                        class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                                                        <div class="text-gray-900">
+                                                            {{ $message->message }}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-start-6 col-end-13 p-2 rounded-lg">
-                                    <div class="flex items-center justify-start flex-row-reverse">
-                                        <div
-                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                            A
-                                        </div>
-                                        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                                            <div class="text-gray-900">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing. ?
+                                        @else
+                                            <!--Receiver Section-->
+                                            <div class="col-start-1 col-end-8 p-2 rounded-lg">
+                                                <div class="flex flex-row items-center">
+                                                    <!--Profile Picture-->
+                                                    <a href="{{ route('user.profile', ['id' => $data->user->id]) }}">
+                                                        <div
+                                                            class="flex items-center justify-center h-10 w-10 rounded-full overflow-hidden bg-indigo-500 flex-shrink-0">
+                                                            <img src="{{ asset($data->user->profile_picture) }}"
+                                                                alt="Profile Picture" class="h-10 w-10 object-cover"
+                                                                onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';">
+                                                        </div>
+                                                    </a>
+                                                    <!--Message-->
+                                                    <div
+                                                        class="relative ml-3 text-sm bg-white dark:bg-gray-800 py-2 px-4 shadow rounded-xl">
+                                                        <div class="text-gray-900 dark:text-gray-100">
+                                                            {{ $message->message }}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="absolute text-xs bottom-0 right-0 -mb-5 mr-2 text-gray-500">
-                                                Seen
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-start-1 col-end-8 p-2 rounded-lg">
-                                    <div class="flex flex-row items-center">
-                                        <div
-                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                            A
-                                        </div>
-                                        <div
-                                            class="relative ml-3 text-sm bg-white dark:bg-gray-800 py-2 px-4 shadow rounded-xl">
-                                            <div class="text-gray-900 dark:text-gray-100">
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                                Perspiciatis, in.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- {{ $data->messages->links() }} --}}
+                                @endif
                             </div>
                         </div>
                     </div>
+
+                    <!-- Input Section -->
                     <div class="flex flex-row items-center h-16 rounded-xl bg-white dark:bg-gray-800 w-full px-4">
                         <div>
                             <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
@@ -180,3 +185,113 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    var scrollableElement = document.getElementById('message-container');
+    // Set the scrollTop to the maximum value
+    scrollableElement.scrollTop = scrollableElement.scrollHeight;
+
+    let currentPage = 1;
+    let isLoading = false; // Flag to prevent multiple simultaneous requests
+    let lastPage = @json($data->messages->lastPage());
+    var url = @json(route('room.show', ['room_id' => $data->messages[0]->room_id]));
+    const messageContainer = document.getElementById('message-container');
+
+    messageContainer.addEventListener('scroll', () => {
+        if (
+            messageContainer.scrollTop === 0 && // User has scrolled to the top
+            !isLoading // No ongoing requests
+        ) {
+            console.log("INSIDE");
+            // Increment the current page and set the loading flag
+            currentPage++;
+            isLoading = true;
+
+            //Make request if current page is smaller than last page 
+            if (lastPage >= currentPage) {
+                // Make an AJAX request to load more messages
+                // Send the `currentPage` as a parameter to your backend route
+                $.ajax({
+                    url: url + `?page=${currentPage}`,
+                    type: 'GET',
+                    beforeSend: function() {
+                        console.log("HEY")
+                        document.getElementById('loading-spinner').style.display = 'block';
+                    },
+                    success: function(data) {
+                        document.getElementById('loading-spinner').style.display = 'none';
+                        // Append the new messages to the container
+                        insertMessage(data.data.messages.data)
+
+                        isLoading = false; // Reset the loading flag
+                        lastPage = data.data.messages.last_page; // Get the page numbers
+                    },
+                    error: function(error) {
+                        console.error("An error: ", error);
+                    }
+                });
+            } else
+                console.log("No More messages")
+        }
+        console.log("OUTSIDE");
+    });
+
+    function insertMessage(messages) {
+        messages.forEach(message => {
+            //Sender
+            if (message.sender_id == userId) {
+                const senderMessageHtml = `
+                        <div class="col-start-6 col-end-13 p-2 rounded-lg">
+                            <div class="flex items-center justify-start flex-row-reverse">
+                            <!--Profile Picture-->
+                                <a href="{{ route('user.profile', ['id' => Auth::user()->id]) }}">
+                                <div
+                                class="flex items-center justify-centers h-10 w-10 rounded-full overflow-hidden bg-indigo-500 flex-shrink-0">
+                                <img src="{{ asset(auth()->user()->profile_picture) }}"
+                                alt="Profile Picture" class="h-10 w-10 object-cover"
+                                onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';">
+                                </div>
+                                </a>
+                                <!--Message-->
+                                    <div
+                                    class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                                    <div class="text-gray-900">
+                                        '${message.message}'
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                messageContainer.insertAdjacentHTML('afterbegin', senderMessageHtml)
+            }
+
+            //Receiver
+            else {
+                const receiverMessageHtml = `
+                <!--Receiver Section-->
+                <div class="col-start-1 col-end-8 p-2 rounded-lg">
+                    <div class="flex flex-row items-center">
+                        <!--Profile Picture-->
+                        <a href="{{ route('user.profile', ['id' => $data->user->id]) }}">
+                            <div
+                                class="flex items-center justify-center h-10 w-10 rounded-full overflow-hidden bg-indigo-500 flex-shrink-0">
+                                <img src="{{ asset($data->user->profile_picture) }}"
+                                    alt="Profile Picture" class="h-10 w-10 object-cover"
+                                    onerror="this.onerror=null; this.src='{{ asset('storage/profile-pictures/user.png') }}';">
+                            </div>
+                        </a>
+                        <!--Message-->
+                        <div
+                            class="relative ml-3 text-sm bg-white dark:bg-gray-800 py-2 px-4 shadow rounded-xl">
+                            <div class="text-gray-900 dark:text-gray-100">
+                                '${message.message}'
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                messageContainer.insertAdjacentHTML('afterbegin', receiverMessageHtml)
+            }
+        });
+    }
+</script>
