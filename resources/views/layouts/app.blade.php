@@ -20,6 +20,8 @@
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="{{ asset('notification.js') }}"></script>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 </head>
 
 <body class="font-sans antialiased">
