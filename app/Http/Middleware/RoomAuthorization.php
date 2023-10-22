@@ -22,8 +22,9 @@ class RoomAuthorization
         if (!$room) {
             return back()->withErrors([['error' => 'Chat is not exist'], Response::HTTP_NOT_FOUND]);
         }
-        if ($room->user_id_1 != auth()->user()->id || $room->user_id_2 != auth()->user()->id) {
-            return response()->json(['message' => 'Access denied'], Response::HTTP_FORBIDDEN);
+        if ($room->user_id_1 != auth()->user()->id && $room->user_id_2 != auth()->user()->id) {
+            abort(403, 'Access denied');
+            //return response()->json(['message' => 'Access denied'], Response::HTTP_FORBIDDEN);
         }
 
         return $next($request);
