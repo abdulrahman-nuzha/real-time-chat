@@ -69,6 +69,7 @@
                             <div class="grid grid-cols-12 gap-y-2 overflow-y-auto" id="message-container">
                                 @if ($data)
                                     <!-- Loading spinner -->
+                                    <!--Need Imporvments !! -->
                                     <div id="loading-spinner"
                                         class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 pb-2"
                                         style="display: none;">
@@ -83,6 +84,15 @@
                                                     repeatCount="indefinite" />
                                             </circle>
                                         </svg>
+                                    </div>
+                                    <div id="no-messages" class="flex justify-between absolute left-1/2"
+                                        style="display: none;">
+                                        <div class="font-medium text-sm dark:text-gray-100 text-gray-700">
+                                            No More Messages
+                                        </div>
+                                        <div>
+                                            <hr class="h-px my-1 dark:bg-gray-200 border-0 bg-gray-700">
+                                        </div>
                                     </div>
 
                                     @foreach ($data->messages->reverse() as $message)
@@ -132,16 +142,13 @@
                                             </div>
                                         @endif
                                     @endforeach
-
-                                    {{-- {{ $data->messages->links() }} --}}
                                 @endif
                             </div>
                         </div>
                     </div>
-
                     <!-- Input Section -->
                     <div class="flex flex-row items-center h-16 rounded-xl bg-white dark:bg-gray-800 w-full px-4">
-                        <div>
+                        {{-- <div>
                             <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -150,12 +157,12 @@
                                     </path>
                                 </svg>
                             </button>
-                        </div>
+                        </div> --}}
                         <div class="flex-grow ml-4">
                             <div class="relative w-full">
-                                <input type="text"
+                                <input type="text" id="message-input"
                                     class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10" />
-                                <button
+                                {{-- <button
                                     class="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -163,11 +170,11 @@
                                             d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
                                         </path>
                                     </svg>
-                                </button>
+                                </button> --}}
                             </div>
                         </div>
                         <div class="ml-4">
-                            <button
+                            <button id="send-button"
                                 class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
                                 <span>Send</span>
                                 <span class="ml-2">
@@ -230,11 +237,29 @@
                         console.error("An error: ", error);
                     }
                 });
-            } else
+            } else {
                 console.log("No More messages")
+                document.getElementById('no-messages').style.display = 'block';
+            }
         }
-        console.log("OUTSIDE");
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Add an event listener to the send button
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            if (message.trim() !== '') {
+                // Send the message using an AJAX request to your Laravel backend
+                sendMessage(message);
+                // Clear the input field after sending
+                messageInput.value = '';
+            }
+        });
+    });
+
 
     function insertMessage(messages) {
         messages.forEach(message => {
@@ -293,5 +318,33 @@
                 messageContainer.insertAdjacentHTML('afterbegin', receiverMessageHtml)
             }
         });
+    }
+    // Function to send a message to the server
+    function sendMessage() {
+        url = 'url for sending a message';
+        // Make an AJAX request to your Laravel backend
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                user_id: userId,
+                _token: '{{ csrf_token() }}'
+                message: message
+            },
+            success: function(response) {
+                console.log("success");
+                //should be inserted for the sender and reciver
+            },
+            error: function(xhr, status, error) {
+                var errorMessage = xhr.responseText;
+                // $('.error-container').text('Error: ' +
+                //     errorMessage); // Display the error
+                //console.log(errorMessage);
+            }
+        });
+    }
+
+    function receiveMessage() {
+        ;
     }
 </script>

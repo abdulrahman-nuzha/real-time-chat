@@ -9,6 +9,9 @@ use stdClass;
 
 class RoomController extends Controller
 {
+    /**
+     * Display a listing of user rooms.
+     */
     function index(Request $request)
     {
         $rooms = $request->user()->rooms();
@@ -55,7 +58,7 @@ class RoomController extends Controller
         if ($request->ajax()) {
             return response()->json(['data' => $data]);
         }
-        
+
         return view('room.index')->with(['data' => $data]);
     }
 }
